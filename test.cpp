@@ -1,7 +1,7 @@
-#include <iostream>
-#include <matplot/matplot.h>
+// Ivan Tymoshchenko 206620
+// Maciej Lewandowski 203353
 
-using namespace matplot;
+#include <matplot/matplot.h>
 
 void mppp_plot(auto x, auto y){
     matplot::plot(x, y);
@@ -27,28 +27,38 @@ std::pair<std::vector<double>, std::vector<double>> dft(auto y, double fs){
     return {fourier_x, fourier_magnitude};
 }
 
-std::pair<std::vector<double>, std::vector<double>> idft(auto y, double fs, double length){
+std::pair<std::vector<double>, std::vector<double>> idft(auto y, double fs){
     using namespace matplot;
     int N = y.size();
     std::vector<std::complex<double>> fourier(N);
-    std::vector<double> fourier_x(N), fourier_magnitude(N);
+    std::vector<double> fourier_x(N), fourier_real(N);
     for (int k = 0; k < N; k++) {
-        fourier_x[k] = k / (fs * N);
+        fourier_x[k] = k / fs;
         for (int n = 0; n < N; n++) {
             double angle = 2 * M_PI * k * n / N;
             fourier[k] += y[n] * std::polar(1.0, angle);
         }
-        fourier_magnitude[k] = std::real(fourier[k]);
+        fourier_real[k] = std::real(fourier[k]);
     }
-    return {fourier_x, fourier_magnitude};
+    return {fourier_x, fourier_real};
 }
 
-std::pair<std::vector<double>, std::vector<double>> sin(double f, double fs, double length){
+std::pair<std::vector<double>, std::vector<double>> generate_sine(double f, double fs, double length){
     std::vector<double> x, y;
     int x_size = static_cast<int>(fs * length);
     for (int i = 0; i < x_size; i++){
         x.push_back(i / fs);
         y.push_back(std::sin(2 * M_PI * i * f / fs));
+    }
+    return {x, y};
+}
+
+std::pair<std::vector<double>, std::vector<double>> generate_cosine(double f, double fs, double length){
+    std::vector<double> x, y;
+    int x_size = static_cast<int>(fs * length);
+    for (int i = 0; i < x_size; i++){
+        x.push_back(i / fs);
+        y.push_back(std::cos(2 * M_PI * i * f / fs));
     }
     return {x, y};
 }
@@ -59,9 +69,9 @@ int main() {
         x.push_back(i * 0.001);
         y.push_back(std::sin(2 * pi * 10 * i * 0.001) + std::cos(2 * pi * 14 * i * 0.001) * 2);
     }*/
-    auto [dft_x, dft_y] = dft(sin(10, 1000, 8).second, 1000);
+    auto [dft_x, dft_y] = dft(generate_sine(10, 1000, 8).second, 1000);
     //auto [dft_x, dft_y] = dft(y, 1000);
-    auto [idft_x, idft_y] = idft(dft_y, 1000, 8);
+    auto [idft_x, idft_y] = idft(dft_y, 1000);
     //mppp_plot(sin(10, 1000, 8).first, sin(10, 1000, 8).second);
     mppp_plot(idft_x, idft_y);
     //mppp_plot(x, y);

@@ -1,8 +1,10 @@
 .vscode/
 build/
+!/zbudowana_biblioteka/**
+
+test.png
 
 *:Zone.Identifier
-
 
 # Prerequisites
 *.d
