@@ -1,10 +1,7 @@
 .vscode/
 build/
-!/zbudowana_biblioteka/**
 
 test.png
-
-*:Zone.Identifier
 
 # Prerequisites
 *.d
@@ -38,3 +35,7 @@ test.png
 *.exe
 *.out
 *.app
+
+*:Zone.Identifier
+
+!/zbudowana_biblioteka/signal_lib.cpython-313-x86_64-linux-gnu.so
